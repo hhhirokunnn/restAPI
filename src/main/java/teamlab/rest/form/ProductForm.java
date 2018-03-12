@@ -1,32 +1,21 @@
-package teamlab.rest.entity;
+package teamlab.rest.form;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.web.multipart.MultipartFile;
 
-@Entity
-@Table(name="product")
-public class Product {
+public class ProductForm {
 
-	@Id
-	@Column(name = "id", length = 10)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(length = 100)
 	private String title;
 
-	@Column(length = 500)
 	private String description;
-
-	@Column(length = 10)
+	
 	private Long price;
 	
-	@Column(length = 100)
 	private String picPath;
+	
+	private MultipartFile uploadFile;
+	
 
 	public int getId() {
 		return id;
@@ -59,6 +48,7 @@ public class Product {
 	public void setPrice(Long price) {
 		this.price = price;
 	}
+	
 
 	public String getPicPath() {
 		return picPath;
@@ -67,5 +57,14 @@ public class Product {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
-	
+
+	public MultipartFile getUploadFile() {
+		return uploadFile;
+	}
+
+	public void setUploadFile(MultipartFile uploadFile) {
+		this.uploadFile = uploadFile;
+	}
+
+
 }
