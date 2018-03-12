@@ -110,11 +110,14 @@ public class ProductApiController {
     @ResponseBody
     @PostMapping(path="/products")
     public ResponseEntity < ? > create(@Validated ProductForm form, BindingResult result) throws IllegalArgumentException, IllegalAccessException{
-    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form))
+    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form) || productService.formValidation(form))
             return new ResponseEntity<>(form,HttpStatus.BAD_REQUEST);
     	MultipartFile uploadFile = form.getUploadFile();
     	String uploadPath = ApplicationUtil.uploadFile(uploadFile);
     	form.setPicPath(uploadPath.equals("") ? null : uploadPath);
+    	//特殊文字エスケープ
+    	form.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
+    	form.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
     	Product product = new Product();
     	BeanUtils.copyProperties(form, product);
 		productService.save(product);
@@ -150,7 +153,7 @@ public class ProductApiController {
     @ResponseBody
     @PutMapping(path="/products/{id}")
     public ResponseEntity < ? > update(@Validated ProductForm form, BindingResult result, @PathVariable("id") int id) throws IllegalArgumentException, IllegalAccessException, IOException{
-    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form))
+    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form) || productService.formValidation(form))
             return new ResponseEntity<>(form,HttpStatus.BAD_REQUEST);
      	Optional<Product> existProduct = productRepository.findById(id);
     	if(!existProduct.isPresent())
@@ -163,6 +166,9 @@ public class ProductApiController {
         	form.setPicPath(ApplicationUtil.uploadFile(uploadPic));
     	}
     	form.setId(id);
+    	//特殊文字エスケープ
+    	form.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
+    	form.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
     	Product updateProduct = new Product();
     	BeanUtils.copyProperties(form, updateProduct);
 		Product updatedProduct = productRepository.save(updateProduct);

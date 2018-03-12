@@ -7,8 +7,10 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import teamlab.rest.entity.Product;
+import teamlab.rest.form.ProductForm;
 import teamlab.rest.repository.ProductRepository;
 
 @Service
@@ -34,4 +36,21 @@ public class ProductService {
 		productRepository.save(product);
 	}
 	
+	/**
+	 * バリデーション
+	 * タイトルは100文字以内
+	 * 説明文は500文字以内
+	 * @param form
+	 */
+	public boolean formValidation(ProductForm form){
+		String title = form.getTitle();
+		if(!StringUtils.isEmpty(title) && title.codePointCount(0, title.length()) > 100){
+			return false;
+		}
+		String description = form.getDescription();
+		if(!StringUtils.isEmpty(description) && description.codePointCount(0, description.length()) > 500){
+			return false;
+		}
+		return true;
+	}
 }

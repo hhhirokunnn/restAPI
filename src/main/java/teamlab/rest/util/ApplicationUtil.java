@@ -11,12 +11,40 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ApplicationUtil {
+	
+	/**
+	 * エスケープする文字のmap
+	 */
+	public static final HashMap<String, String> ESCAPE_SEQUENCE = new HashMap<String,String>(){{
+		put("&", "&amp;");
+		put("\"", "&quot;");
+		put("<", "&lt;");
+		put(">", "&gt;");
+		put("'", "&#39;");
+	}};
 
+	/**
+	 * 文字をエスケープする
+	 * @param target
+	 * @return
+	 */
+	public static String translateEscapeSequence(String target){
+		if(StringUtils.isEmpty(target))
+			return target;
+		String result = target;
+		for(Map.Entry<String, String> escapeLiterature : ESCAPE_SEQUENCE.entrySet())
+			result = target.replace(escapeLiterature.getKey(), escapeLiterature.getValue());
+		return result;
+	}
+	
 	/**
 	 * 全てのフィールドがnullかチェックする
 	 * @param object
