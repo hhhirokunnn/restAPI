@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import teamlab.rest.dto.ProductDto;
 import teamlab.rest.entity.Product;
 import teamlab.rest.form.ProductForm;
 import teamlab.rest.repository.ProductRepository;
@@ -32,8 +34,10 @@ public class ProductService {
 		return productRepository.findByTitleContaining(title);
 	}
 	
-	public void save(Product product){
-		productRepository.save(product);
+	public Product save(ProductDto dto){
+		Product product = new Product();
+		BeanUtils.copyProperties(dto, product);
+		return productRepository.save(product);
 	}
 	
 	/**

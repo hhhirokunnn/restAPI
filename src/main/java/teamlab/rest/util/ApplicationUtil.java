@@ -46,25 +46,6 @@ public class ApplicationUtil {
 	}
 	
 	/**
-	 * 全てのフィールドがnullかチェックする
-	 * @param object
-	 * @return
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 */
-	public static boolean checkAllNull(Object object) throws IllegalArgumentException, IllegalAccessException {
-		boolean checkNull = true;
-		for(Field field : object.getClass().getDeclaredFields()){
-			field.setAccessible(true);
-			if(field.get(object) != null){
-				checkNull = false;
-				break;
-			}
-		}
-		return checkNull;
-	}
-	
-	/**
 	 * 拡張子を取得
 	 * @param path
 	 * @return

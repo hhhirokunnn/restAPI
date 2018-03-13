@@ -28,9 +28,9 @@ version : 5.7.20
 
 ## 全体の設計・構成についての説明
 
-### DB設計
+### テーブル設計
 
-https://github.com/hhhirokunnn/restAPI/wiki/DB%E8%A8%AD%E8%A8%88
+https://github.com/hhhirokunnn/restAPI/wiki/%E3%83%86%E3%83%BC%E3%83%96%E3%83%AB%E8%A8%AD%E8%A8%88
 
 ### API設計
 

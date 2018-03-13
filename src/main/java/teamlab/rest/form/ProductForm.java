@@ -2,6 +2,11 @@ package teamlab.rest.form;
 
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * ProductのFormクラス
+ * @author mukaihiroto
+ *
+ */
 public class ProductForm {
 
 	private int id;
@@ -11,8 +16,6 @@ public class ProductForm {
 	private String description;
 	
 	private Long price;
-	
-	private String picPath;
 	
 	private MultipartFile uploadFile;
 	
@@ -49,15 +52,6 @@ public class ProductForm {
 		this.price = price;
 	}
 	
-
-	public String getPicPath() {
-		return picPath;
-	}
-
-	public void setPicPath(String picPath) {
-		this.picPath = picPath;
-	}
-
 	public MultipartFile getUploadFile() {
 		return uploadFile;
 	}

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import teamlab.rest.dto.ProductDto;
 import teamlab.rest.entity.Product;
 import teamlab.rest.form.ProductForm;
 import teamlab.rest.repository.ProductRepository;
@@ -103,17 +104,17 @@ public class ProductApiController {
     @ResponseBody
     @PostMapping(path="/products")
     public ResponseEntity < ? > create(@Validated ProductForm form, BindingResult result) throws IllegalArgumentException, IllegalAccessException{
-    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form) || productService.formValidation(form))
+    	if (result.hasErrors() || StringUtils.isEmpty(form.getTitle()) || productService.formValidation(form))
             return new ResponseEntity<>(form,HttpStatus.BAD_REQUEST);
     	MultipartFile uploadFile = form.getUploadFile();
     	String uploadPath = ApplicationUtil.uploadFile(uploadFile);
-    	form.setPicPath(uploadPath.equals("") ? null : uploadPath);
+    	ProductDto dto = new ProductDto();
+    	BeanUtils.copyProperties(form, dto);
+    	dto.setPicPath(uploadPath.equals("") ? null : uploadPath);
     	//特殊文字エスケープ
-    	form.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
-    	form.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
-    	Product product = new Product();
-    	BeanUtils.copyProperties(form, product);
-		productService.save(product);
+    	dto.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
+    	dto.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
+		Product product = productService.save(dto);
 		return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
     
@@ -130,7 +131,7 @@ public class ProductApiController {
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	ApplicationUtil.deleteFile(existProduct.get().getPicPath());
 		productRepository.deleteById(id);
-		return new ResponseEntity<>(existProduct, HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
     /**
@@ -146,25 +147,25 @@ public class ProductApiController {
     @ResponseBody
     @PutMapping(path="/products/{id}")
     public ResponseEntity < ? > update(@Validated ProductForm form, BindingResult result, @PathVariable("id") int id) throws IllegalArgumentException, IllegalAccessException, IOException{
-    	if (result.hasErrors() || ApplicationUtil.checkAllNull(form) || productService.formValidation(form))
+    	if (result.hasErrors() || productService.formValidation(form))
             return new ResponseEntity<>(form,HttpStatus.BAD_REQUEST);
      	Optional<Product> existProduct = productRepository.findById(id);
     	if(!existProduct.isPresent())
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     	MultipartFile uploadPic = form.getUploadFile();
+    	ProductDto dto = new ProductDto();
+    	BeanUtils.copyProperties(form, dto);
     	if(uploadPic != null){
     		String existingPic = existProduct.get().getPicPath();
     		if(!StringUtils.isEmpty(existingPic))
     			ApplicationUtil.deleteFile(existingPic);
-        	form.setPicPath(ApplicationUtil.uploadFile(uploadPic));
+    		dto.setPicPath(ApplicationUtil.uploadFile(uploadPic));
     	}
-    	form.setId(id);
+    	dto.setId(id);
     	//特殊文字エスケープ
-    	form.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
-    	form.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
-    	Product updateProduct = new Product();
-    	BeanUtils.copyProperties(form, updateProduct);
-		Product updatedProduct = productRepository.save(updateProduct);
+    	dto.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
+    	dto.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
+		Product updatedProduct = productService.save(dto);
 		return new ResponseEntity<>(updatedProduct,HttpStatus.CREATED);
     }
 }

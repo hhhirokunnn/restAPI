@@ -1,36 +1,20 @@
-package teamlab.rest.entity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+package teamlab.rest.dto;
 
 /**
- * Productのエンティティクラス
+ * ProductのDtoクラス
  * @author mukaihiroto
  *
  */
-@Entity
-@Table(name="product")
-public class Product {
-
-	@Id
-	@Column(name = "id", length = 10)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProductDto {
+	
 	private int id;
 
-	@Column(length = 100)
 	private String title;
 
-	@Column(length = 500)
 	private String description;
-
-	@Column(length = 10)
+	
 	private Long price;
 	
-	@Column(length = 100)
 	private String picPath;
 
 	public int getId() {
@@ -72,5 +56,7 @@ public class Product {
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
 	}
+	
+	public ProductDto(){}
 	
 }
