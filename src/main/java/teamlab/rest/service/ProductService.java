@@ -72,8 +72,8 @@ public class ProductService {
         BeanUtils.copyProperties(form, dto);
         dto.setPicPath(uploadPath.equals("") ? null : uploadPath);
         //特殊文字エスケープ
-        dto.setTitle(ApplicationUtil.translateEscapeSequence(form.getTitle()));
-        dto.setDescription((ApplicationUtil.translateEscapeSequence(form.getDescription())));
+        dto.setTitle(form.getTitle());
+        dto.setDescription(form.getDescription());
         return dto;
     }
     
@@ -87,9 +87,9 @@ public class ProductService {
         Product product = optProduct.get();
         ProductDto dto = new ProductDto();
         String title = StringUtils.isEmpty(form.getTitle()) ? product.getTitle() : form.getTitle();
-        dto.setTitle(ApplicationUtil.translateEscapeSequence(title));
+        dto.setTitle(title);
         String description = StringUtils.isEmpty(form.getDescription()) ? product.getDescription() : form.getDescription();
-        dto.setDescription(ApplicationUtil.translateEscapeSequence(description));
+        dto.setDescription(description);
         dto.setPrice(form.getPrice() == null ? product.getPrice() : form.getPrice());
         MultipartFile uploadPic = form.getUploadFile();
         if(uploadPic != null){
