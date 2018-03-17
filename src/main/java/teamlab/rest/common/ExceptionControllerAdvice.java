@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ExceptionControllerAdvice {
 
-	@InitBinder
-	public void initBinder(WebDataBinder binder) {
-		throw new RuntimeException("controller advice: init binder");
-	}
-	
-	@ExceptionHandler(Exception.class)
-	public String exception(Exception e) {
-		throw new RuntimeException(e.getMessage(),e);
-	}
-	
-	@ModelAttribute
-	public void modelAttribute(){
-		throw new RuntimeException("controller advice:model Attribute");
-	}
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        throw new RuntimeException("controller advice: init binder");
+    }
+    
+    @ExceptionHandler(Exception.class)
+    public String exception(Exception e) {
+        throw new RuntimeException(e.getMessage(),e);
+    }
+    
+    @ModelAttribute
+    public void modelAttribute(){
+        throw new RuntimeException("controller advice:model Attribute");
+    }
 }

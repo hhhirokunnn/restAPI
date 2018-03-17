@@ -36,58 +36,58 @@ import teamlab.rest.util.ApplicationUtil;
 @RestController
 @RequestMapping(value="/api/v1", produces=MediaType.APPLICATION_JSON_VALUE)
 public class ProductApiController {
-	
-	@Autowired
-	private ProductRepository productRepository;
-	
-	@Autowired
-	private ProductService productService;
-	
-	@ModelAttribute
-	private ProductForm setUpForm() {
+    
+    @Autowired
+    private ProductRepository productRepository;
+    
+    @Autowired
+    private ProductService productService;
+    
+    @ModelAttribute
+    private ProductForm setUpForm() {
         return new ProductForm();
     }
 
-	/**
-	 * 全商品を表示する
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping(path="/products")
+    /**
+     * 全商品を表示する
+     * @return
+     */
+    @ResponseBody
+    @GetMapping(path="/products")
     public ResponseEntity<?> findAll(){
-		List<Product> products = productService.findAll();
-		if(products.isEmpty())
-			return new ResponseEntity<>(products,HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>(products,HttpStatus.OK);
-	}
-	
-	/**
-	 * 指定されたidの商品を表示する
-	 * @param id
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping(path="/products/{id}")
+        List<Product> products = productService.findAll();
+        if(products.isEmpty())
+            return new ResponseEntity<>(products,HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(products,HttpStatus.OK);
+    }
+    
+    /**
+     * 指定されたidの商品を表示する
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @GetMapping(path="/products/{id}")
     public ResponseEntity<?> findDetail(@PathVariable("id") int id){
-		Optional<Product> product = productService.findById(id);
-		if(product.isPresent())
-			return new ResponseEntity<>(product,HttpStatus.OK);
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	} 
-	
-	/**
-	 * タイトルで曖昧検索した商品を表示する
-	 * @param title
-	 * @return
-	 */
+        Optional<Product> product = productService.findById(id);
+        if(product.isPresent())
+            return new ResponseEntity<>(product,HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } 
+    
+    /**
+     * タイトルで曖昧検索した商品を表示する
+     * @param title
+     * @return
+     */
     @ResponseBody
     @GetMapping(path="/products/search")
     public ResponseEntity<?> findByTitle(@RequestParam("title") String title){
-    	Optional<Product> product = productService.findByTitleContaining(title);
-		if(product.isPresent())
-			return new ResponseEntity<>(product,HttpStatus.OK);
-		return new ResponseEntity<>(product,HttpStatus.NOT_FOUND);
-	}
+        Optional<Product> product = productService.findByTitleContaining(title);
+        if(product.isPresent())
+            return new ResponseEntity<>(product,HttpStatus.OK);
+        return new ResponseEntity<>(product,HttpStatus.NOT_FOUND);
+    }
     
     /**
      * 商品を登録する
@@ -100,10 +100,10 @@ public class ProductApiController {
     @ResponseBody
     @PostMapping(path="/products")
     public ResponseEntity < ? > create(@Validated ProductForm form, BindingResult result) throws IllegalArgumentException, IllegalAccessException{
-    	if (result.hasErrors() || StringUtils.isEmpty(form.getTitle()) || productService.formValidation(form))
+        if (result.hasErrors() || StringUtils.isEmpty(form.getTitle()) || productService.formValidation(form))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		Product product = productService.save(productService.convertFormToDto(form));
-		return new ResponseEntity<>(product,HttpStatus.CREATED);
+        Product product = productService.save(productService.convertFormToDto(form));
+        return new ResponseEntity<>(product,HttpStatus.CREATED);
     }
     
     /**
@@ -114,12 +114,12 @@ public class ProductApiController {
     @ResponseBody
     @DeleteMapping(path="/products/{id}")
     public ResponseEntity < ? > delete(@PathVariable("id") int id){
-    	Optional<Product> existProduct = productRepository.findById(id);
-    	if(!existProduct.isPresent())
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	ApplicationUtil.deleteFile(existProduct.get().getPicPath());
-		productRepository.deleteById(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Optional<Product> existProduct = productRepository.findById(id);
+        if(!existProduct.isPresent())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ApplicationUtil.deleteFile(existProduct.get().getPicPath());
+        productRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -132,15 +132,15 @@ public class ProductApiController {
     @ResponseBody
     @PutMapping(path="/products/{id}")
     public ResponseEntity < ? > update(@Validated ProductForm form, BindingResult result, @PathVariable("id") int id) {
-    	if (result.hasErrors() || productService.formValidation(form))
+        if (result.hasErrors() || productService.formValidation(form))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-     	Optional<Product> existProduct = productService.findById(id);
-    	if(!existProduct.isPresent())
-    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    	ProductDto dto = productService.convertFormToDto(form,existProduct);
-    	dto.setId(id);
-		productService.save(dto);
-		Optional<Product> updatedProduct = productService.findById(id);
-		return new ResponseEntity<>(updatedProduct,HttpStatus.CREATED);
+        Optional<Product> existProduct = productService.findById(id);
+        if(!existProduct.isPresent())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ProductDto dto = productService.convertFormToDto(form,existProduct);
+        dto.setId(id);
+        productService.save(dto);
+        Optional<Product> updatedProduct = productService.findById(id);
+        return new ResponseEntity<>(updatedProduct,HttpStatus.CREATED);
     }
 }
